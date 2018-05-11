@@ -1,7 +1,7 @@
 resource "aws_security_group" "test_sg" {
-  name        = "test_sg"
+  name        = "test_sg_${var.service_name}"
   description = "Allow HTTP inbound traffic"
-  vpc_id      = "${aws_vpc.test_vpc.id}"
+  vpc_id = "${var.vpc}"
 
   ingress {
     from_port   = 80
@@ -21,7 +21,7 @@ resource "aws_security_group" "test_sg" {
 resource "aws_instance" "web_server" {
   ami = "${data.aws_ami.ubuntu_1604.id}"
   instance_type = "t2.micro"
-  subnet_id = "${aws_subnet.test_subnet.id}"
+  subnet_id = "${var.subnet}"
   associate_public_ip_address = true
   vpc_security_group_ids = ["${aws_security_group.test_sg.id}"]
 
@@ -30,4 +30,8 @@ resource "aws_instance" "web_server" {
   echo "${var.html_content}" > index.html
   nohup busybox httpd -f -p 80 &
   EOF
+
+  tags {
+    Name = "${var.service_name}"
+  }
 }
