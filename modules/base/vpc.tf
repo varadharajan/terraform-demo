@@ -1,5 +1,5 @@
 resource "aws_vpc" "test_vpc" {
-  cidr_block = "10.0.0.0/16"
+  cidr_block = "${var.vpc_cidr}"
 }
 
 resource "aws_internet_gateway" "test_gw" {
@@ -17,7 +17,7 @@ resource "aws_route_table" "test_route_table" {
 
 resource "aws_subnet" "test_subnet" {
   vpc_id     = "${aws_vpc.test_vpc.id}"
-  cidr_block = "10.0.1.0/24"
+  cidr_block = "${var.subnet_cidr}"
 }
 
 resource "aws_route_table_association" "test_route_table_association" {
